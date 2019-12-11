@@ -153,7 +153,7 @@ class Display:
 #block = Block(red, 16, 16)
 
 go=Display()
-go.load_newmap("map2.tmx")
+go.load_newmap("map/map2.tmx")
 go.updateRender()
 # tmxdata = pytmx.TiledMap("map2.tmx")
 # clock = pygame.time.Clock()
