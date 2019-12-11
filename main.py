@@ -147,33 +147,7 @@ class Display:
 go=Display()
 go.load_newmap("map/mapp.tmx")
 go.updateRender()
-# tmxdata = pytmx.TiledMap("map2.tmx")
-# clock = pygame.time.Clock()
-#
-# # create game display
-# window = pygame.display.set_mode((800,tmxdata.height*tmxdata.tileheight))
-# red = pygame.Color(153,0,0)
-# pygame.display.set_caption("Super Mario")
-#
-# #tmxdata = pytmx.TiledMap("map2.tmx")
-# gameMap = load_pygame("map2.tmx")
-#
-#
-# windowOpen = True
-#
-# while windowOpen:
-#     pygame.display.flip() #Rafraichissement
-#
-#     for event in pygame.event.get():
-#         if event.type == pygame.QUIT:
-#             windowOpen = False
-#
-#     for layer in gameMap.visible_layers:
-#         if isinstance(layer, pytmx.TiledTileLayer):
-#             for x, y, gid in layer:
-#                 tile = gameMap.get_tile_image_by_gid(gid)
-#                 if tile:
-#                     window.blit(tile, (x * gameMap.tilewidth, y * gameMap.tileheight))
+
 
 
 pygame.quit()
