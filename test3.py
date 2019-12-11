@@ -42,10 +42,11 @@ class BlockTest(pygame.sprite.Sprite):
 
        self.movement_dict = {'left': (-self.speed,0), 'right': (self.speed,0), 'down': (0,self.speed), 'up': (0,-self.speed), 'rest': (0,0)}
        self.movement = 'rest'
-       self.rect.x=50
-       self.rect.y=50
+       self.rect.x=64
+       self.rect.y=64
 
-    def update(self, event):
+    def update(self, event, obstacle):
+
         if event != None:
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -65,8 +66,13 @@ class BlockTest(pygame.sprite.Sprite):
             elif event.type == pygame.KEYUP:
                 self.movement = 'rest'
 
-        self.rect.x += self.movement_dict[self.movement][0]
-        self.rect.y += self.movement_dict[self.movement][1]
+            self.rect.x += self.movement_dict[self.movement][0]
+            self.rect.y += self.movement_dict[self.movement][1]
+
+
+        if pygame.sprite.spritecollideany(self,obstacle) is not None:
+            self.rect.x -= self.movement_dict[self.movement][0]
+            self.rect.y -= self.movement_dict[self.movement][1]
 
 
     def draw(self, display):
@@ -94,11 +100,10 @@ class Display:
 
         layer2 = self.gameMap.get_layer_by_name("colli")
 
-        # for x, y, gid in layer2:
-        #     if (gid!=0):
-        #         # print(gid)
-        #         self.obstacles.add(Tuile(x,y,gid))
-
+        for x, y, gid in layer2:
+            a=True
+            if (gid!=0):
+                self.obstacles.add(Tuile(x,y,gid))
 
     def updateRender(self):
         while self.displayRunning:
@@ -111,8 +116,8 @@ class Display:
                     self.displayRunning = False
                     pygame.display.update()
 
-
-            self.block.update(event)
+            # Si event detecter update du block
+            self.block.update(event, self.obstacles)
 
             # rendu de la maps
             for layer in self.gameMap.visible_layers:
@@ -120,26 +125,13 @@ class Display:
                     for x, y, gid in layer:
                         tile = self.gameMap.get_tile_image_by_gid(gid)
                         if tile:
+
+                            # Gestion scrolling ici
                             if (self.block.rect.x>400):
                                 self.displayWindow.blit(tile, (x * self.gameMap.tilewidth-self.block.rect.x+400, y * self.gameMap.tileheight))
                             else:
                                 self.displayWindow.blit(tile, (x * self.gameMap.tilewidth, y * self.gameMap.tileheight))
 
-                        if pygame.sprite.spritecollideany(self.block,self.obstacles):
-                            print("lol")
-                        # if layer.name == "colli":
-                        #     if self.block.rect.x
-                        #     if pygame.Rect(obj.x, obj.y, obj.width, obj.height).colliderect(self.block.rect) == True:
-                        #         print "YOU HIT THE RED BLOCK!!"
-                        #         break
-
-
-                    # if layer.name == "colli":
-                    #     print("lol2")
-                    #     for obj in layer:
-                    #         if pygame.Rect(obj.x, obj.y, obj.width, obj.height).colliderect(self.block.rect) == True:
-                    #             print "YOU HIT THE RED BLOCK!!"
-                    #             break
 
             # rendu block
             self.block.draw(self.displayWindow)
