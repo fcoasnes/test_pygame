@@ -40,12 +40,22 @@ class BlockTest(pygame.sprite.Sprite):
        self.rect = self.image.get_rect()
        self.speed=8;
 
-       self.movement_dict = {'left': (-self.speed,0), 'right': (self.speed,0), 'down': (0,self.speed), 'up': (0,-self.speed), 'rest': (0,0)}
+       self.movement_dict = {'left': (-self.speed,0),
+                             'right': (self.speed,0),
+                             'down': (0,self.speed),
+                             'up': (0,-self.speed),
+                             'left-up': (-self.speed,-self.speed),
+                             'right-up': (self.speed,-self.speed),
+                             'left-down': (-self.speed,self.speed),
+                             'right-down': (self.speed,self.speed),
+                             'rest': (0,0)}
        self.movement = 'rest'
        self.rect.x=64
        self.rect.y=64
 
     def update(self, event, obstacle):
+
+        keys = pygame.key.get_pressed()
 
         if event != None:
             if event.type == pygame.QUIT:
@@ -55,14 +65,30 @@ class BlockTest(pygame.sprite.Sprite):
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
                     quit()
+                elif (keys[pygame.K_UP] and keys[pygame.K_LEFT]):
+                    self.movement = 'left-up'
+                    print(self.movement)
+                elif (keys[pygame.K_UP] and keys[pygame.K_RIGHT]):
+                    self.movement = 'right-up'
+                    print(self.movement)
+                elif (keys[pygame.K_DOWN] and keys[pygame.K_LEFT]):
+                    self.movement = 'left-down'
+                    print(self.movement)
+                elif (keys[pygame.K_DOWN] and keys[pygame.K_RIGHT]):
+                    self.movement = 'right-down'
+                    print(self.movement)
                 elif event.key == pygame.K_LEFT:
                     self.movement = 'left'
+                    print(self.movement)
                 elif event.key == pygame.K_RIGHT:
                     self.movement = 'right'
+                    print(self.movement)
                 elif event.key == pygame.K_DOWN:
                     self.movement = 'down'
+                    print(self.movement)
                 elif event.key == pygame.K_UP:
                     self.movement = 'up'
+                    print(self.movement)
             elif event.type == pygame.KEYUP:
                 self.movement = 'rest'
 
