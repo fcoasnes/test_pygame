@@ -31,7 +31,7 @@ class Tuile(pygame.sprite.Sprite):
 		self.rect = pygame.Rect(x*16,y*16,16,16)
 		self.gid = gid
 
-class BlockTest(pygame.sprite.Sprite):
+class Player(pygame.sprite.Sprite):
     def __init__(self, color, width, height):
        pygame.sprite.Sprite.__init__(self)
        IMAGE = pygame.image.load('sprite/bite.png').convert_alpha()
@@ -40,6 +40,7 @@ class BlockTest(pygame.sprite.Sprite):
        self.image=IMAGE
        self.rect = self.image.get_rect()
        self.speed=8;
+       self.gravite=5
 
        self.movement_dict = {'left': (-self.speed,0),
                              'right': (self.speed,0),
@@ -53,6 +54,22 @@ class BlockTest(pygame.sprite.Sprite):
        self.movement = 'rest'
        self.rect.x=64
        self.rect.y=64
+
+       self.auSol=False
+
+    # def updateSol():
+
+
+    def updateGravitePlayer(self,obstacle):
+        #self.rect.y += self.gravite;
+        if (pygame.sprite.spritecollideany(self,obstacle) is None):
+            self.rect.y += self.gravite;
+            while (pygame.sprite.spritecollideany(self,obstacle) is not None):
+                self.rect.y -= 1;
+
+
+
+
 
     def update(self, event, obstacle):
 
@@ -118,7 +135,7 @@ class Display:
         self.clock = pygame.time.Clock()
         pygame.display.set_caption("Super Mario")
         red = pygame.Color(153,0,0)
-        self.block = BlockTest(red, 16, 16)
+        self.player = Player(red, 16, 16)
 
     def load_newmap(self,mymap):
         self.tmxdata = pytmx.TiledMap(mymap)
@@ -132,6 +149,9 @@ class Display:
             if (gid!=0):
                 self.obstacles.add(Tuile(x,y,gid))
 
+        print(self.obstacles.sprites)
+
+
     def updateRender(self):
         while self.displayRunning:
             for event in pygame.event.get():
@@ -143,8 +163,9 @@ class Display:
                     self.displayRunning = False
                     pygame.display.update()
 
-            # Si event detecter update du block
-            self.block.update(event, self.obstacles)
+            # Si event detecter update du player
+            self.player.update(event, self.obstacles)
+            self.player.updateGravitePlayer(self.obstacles)
 
             # rendu de la maps
             for layer in self.gameMap.visible_layers:
@@ -154,14 +175,14 @@ class Display:
                         if tile:
 
                             # Gestion scrolling ici
-                            if (self.block.rect.x>400):
-                                self.displayWindow.blit(tile, (x * self.gameMap.tilewidth-self.block.rect.x+400, y * self.gameMap.tileheight))
+                            if (self.player.rect.x>400):
+                                self.displayWindow.blit(tile, (x * self.gameMap.tilewidth-self.player.rect.x+400, y * self.gameMap.tileheight))
                             else:
                                 self.displayWindow.blit(tile, (x * self.gameMap.tilewidth, y * self.gameMap.tileheight))
 
 
-            # rendu block
-            self.block.draw(self.displayWindow)
+            # rendu player
+            self.player.draw(self.displayWindow)
 
             self.clock.tick(150)
 
@@ -169,7 +190,6 @@ class Display:
 
 
 
-#block = Block(red, 16, 16)
 
 go=Display()
 go.load_newmap("map/mapp.tmx")
